@@ -1,0 +1,65 @@
+body,html,.app{
+  width:100%;
+  height:100%;
+  margin:0;
+  padding:0;
+  overflow: hidden;
+}
+.app{
+  display:flex;
+  height:100%;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+.sidebar{
+  background:#99b;
+  display:flex;
+  flex-direction:row;
+}
+.sidebar-left,.sidebar-right{
+  height:100%;
+}
+.sidebar-left>*,.sidebar-right>*{
+  width:100%;
+  display:block;
+}
+.cabals{
+  display:flex;
+  flex-direction:column;
+}
+.chat{
+  flex-grow:1;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+.chat>*{
+  width:100%;
+}
+.chat-entries{
+  flex: 1 1 auto;
+  overflow-y:scroll;
+  display:block;
+  margin:0;
+  padding:0;
+}
+.chat-entries li{
+  text-decoration:none;
+  margin:0;
+  padding:0;
+}
+.chat-input{
+  height:3rem;
+  background:#ffa;
+  flex: 0 0 auto;
+  display:flex;
+}
+.chat-input textarea{
+  height:100%;
+  resize:none;
+}
+.chat-input button{
+  display:block;
+}

@@ -1,0 +1,20 @@
+{
+  "name": "cabal-clone",
+  "version": "1.0.0",
+  "description": "Alternative desktop Cabal client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "(c)",
+  "dependencies": {
+    "cabal-core": "^3.0.2",
+    "electron": "^2.0.9",
+    "fs-extra": "^7.0.0",
+    "vue": "^2.5.17",
+    "collect-stream":"^1.2.1"
+  }
+}
