@@ -1,4 +1,5 @@
 const collect = require('collect-stream');
+const validateMessage = require('../validate-message.js');
 
 module.exports = {
   data:function(){return {
@@ -20,7 +21,14 @@ module.exports = {
   template:`
   <div class="chat">
     <ul class="chat-entries">
-      <li class="chat-entry" v-for="message in messages">{{message}}</li>
+      <li class="chat-entry" v-for="message in messages">
+        <span class="message-header">
+          <avatar :cabal="cabal" :userid="message.key"/>&nbsp;
+          <username :cabal="cabal" :userid="message.key"/>&nbsp;
+          <span class="chat-time">{{message.value.timestamp | time}}</span>
+        </span>
+        <span class="chat-text">{{message.value.content.text}}</span>
+      </li>
     </ul>
     <div class="chat-input">
       <textarea v-model="currentMessage" />
@@ -29,21 +37,27 @@ module.exports = {
   </div>`,
   methods:{
     addMessage:function(m){
-      this.messages.push(m);
+      if (validateMessage(m)){
+        this.messages.push(m);
+      }
     },
     start:function(){
+      this.messages = [];
       var startChannel = this.channel;
       // load messages
       this.messageBackStream = this.cabal.messages.read(this.channel,{limit:50});
       // try reading the stream
-      collect(this.messageBackStream, function(er,data){
+      collect(this.messageBackStream, (er,data)=>{
+        console.log('collected',er,data);
         if (this.channel != startChannel){
           return;// in case the channel changed
         }
         if(er){
           console.error(er);
         }
-        data.forEach(addMessage);
+        for(let i = data.length - 1; i >= 0; i --){
+          this.addMessage(data[i]);
+        }
       });
       // listen for new messages
       this.cabal.messages.events.on(this.channel, this.addMessage)
@@ -66,7 +80,7 @@ module.exports = {
     },
     sendMessage:function(){
       var entry = {
-        type: 'text/chat',
+        type: 'chat/text',
         content: {
           text: this.currentMessage,
           channel: this.channel.toLowerCase()
@@ -94,5 +108,11 @@ module.exports = {
   watch:{
     cabal:function(){this.reInit()},
     channel:function(){this.reInit()}
+  },
+  filters:{
+    time:function(ts){
+      var d = new Date(ts);
+      return d.getHours()%12 + ':'+d.getMinutes();
+    }
   }
 }

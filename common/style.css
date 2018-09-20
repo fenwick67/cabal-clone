@@ -1,9 +1,19 @@
+:root{
+  --bg-color:#fff;
+  --text-color:#222;
+  --border-color:rgba(0,0,0,0.25);
+}
+
 body,html,.app{
   width:100%;
   height:100%;
   margin:0;
   padding:0;
   overflow: hidden;
+  background:var(--bg-color);
+  color:var(--text-color);
+  font-family:'Roboto', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
+  font-size:15px;
 }
 .app{
   display:flex;
@@ -13,7 +23,6 @@ body,html,.app{
   padding:0;
 }
 .sidebar{
-  background:#99b;
   display:flex;
   flex-direction:row;
 }
@@ -23,6 +32,18 @@ body,html,.app{
 .sidebar-left>*,.sidebar-right>*{
   width:100%;
   display:block;
+}
+.sidebar-right{
+  background:#99b;
+}
+.channels>*{
+  display:block;
+}
+.channel{
+  font-weight:lighter;
+}
+.channel.channel__active{
+  font-weight:bolder;
 }
 .cabals{
   display:flex;
@@ -45,10 +66,13 @@ body,html,.app{
   margin:0;
   padding:0;
 }
-.chat-entries li{
+.chat-entry{
   text-decoration:none;
   margin:0;
   padding:0;
+  border:solid 1px var(--border-color);
+  margin:1rem;
+  list-style-type: none;
 }
 .chat-input{
   height:3rem;
@@ -59,7 +83,27 @@ body,html,.app{
 .chat-input textarea{
   height:100%;
   resize:none;
+  flex: 1 1 auto;
+  background:var(--bg-color);
+  color:var(--text-color);
 }
 .chat-input button{
   display:block;
+}
+.chat-time{
+  font-weight:lighter;
+}
+.avatar{
+  display:inline-block;
+  width:2rem;
+  height:2rem;
+}
+.message-header{
+  display:flex;
+  flex-direction:row;
+  align-items: center;
+  border-bottom:solid 1px var(--border-color);
+}
+.message-header>*{
+  display:inline-block;
 }

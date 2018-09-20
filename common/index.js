@@ -1,8 +1,18 @@
 const Vue = require('vue/dist/vue.js');
 const fs = require('fs-extra')
-const components = ['cabal-select','channel','channel-select','chat'];
 var Cabal = require('cabal-core');
 // var Cabal = require('../common/cabal-dummy')
+
+var swarm = require('cabal-core/swarm');
+
+const components = [
+	'cabal-select',
+	'channel',
+	'channel-select',
+	'chat',
+	'avatar',
+	'username'
+];
 
 components.forEach(componentName=>{
 	Vue.component(componentName,require('../common/components/'+componentName+'.js'));
@@ -42,7 +52,10 @@ const appView = new Vue({
 		</div>
 	`,
 	data:{
-		cabalKeys:['3ce433583266d7b2ed80e2b11fdc2f24b3643fa88e7602c6dc234f9228d25382'],// List<String>
+		cabalKeys:[
+			'0139fb0c42cd0ac9157d0ed31a4335e6ccb024c9f8800ffdfa6bb6ea93085953',// my local test cabal
+			'3ce433583266d7b2ed80e2b11fdc2f24b3643fa88e7602c6dc234f9228d25382'// the biggun
+		],// List<String>
 		keyToJoin:'',
 		currentChannel:"default",
 		activeCabal:null
@@ -80,13 +93,22 @@ const appView = new Vue({
 	}
 });
 
-loadCabal = (key,ready)=>{
+loadCabal = (key,done)=>{
 	var key = key || null;
 	let homedir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 	let rootdir = homedir + '/.cabal-store/archives/';
 	let dir = rootdir + (key?key:'');
 
 	let cabal = Cabal(dir,key);
+
+	let ready = (er,cabal)=>{
+		if(er){
+			return done(er);
+		}else{
+			swarm(cabal);
+			return done(er,cabal);
+		}
+	}
 
 	cabal.db.ready(()=>{
 		if(key){

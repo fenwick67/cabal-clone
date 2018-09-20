@@ -2,7 +2,7 @@ module.exports = {
   data:function(){return {}},
   props:['active','channel'],
   template:`
-  <div class="channel">
-    #{{channel}}{{active?'*':''}}
-  </div>`
+  <a href="#" :class="[{ channel__active: active }, 'channel']">
+    #{{channel}}
+  </a>`
 }

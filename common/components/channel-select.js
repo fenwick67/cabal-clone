@@ -13,11 +13,12 @@ module.exports = {
   },
   template:`
   <div class="channels">
+    <h1>channels</h1>
     <channel v-for="c in channels"
       :active="currentChannel == c"
       :channel="c"
       :cabal="cabal"
-      @click.native="this.$emit('channelChanged',channel)"
+      @click.native="channelChangedTo(c)"
     >
     </channel>
   </div>
@@ -55,6 +56,10 @@ module.exports = {
           }
         })
       })
+    },
+    channelChangedTo(c){
+      console.log('channel changed to...'+c)
+      this.$emit('channelChanged',c)
     }
   },
   watch:{
