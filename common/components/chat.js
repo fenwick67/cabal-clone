@@ -21,13 +21,20 @@ module.exports = {
   template:`
   <div class="chat">
     <ul class="chat-entries">
+      <li v-if="messages.length == 0" class="chat-entry">
+        This channel is currently empty. As far as I know.
+      </li>
       <li class="chat-entry" v-for="message in messages">
-        <span class="message-header">
-          <avatar :cabal="cabal" :userid="message.key"/>&nbsp;
-          <username :cabal="cabal" :userid="message.key"/>&nbsp;
-          <span class="chat-time">{{message.value.timestamp | time}}</span>
+        <span class="chat-entry-left">
+          <avatar :cabal="cabal" :userid="message.key"/>
         </span>
-        <span class="chat-text">{{message.value.content.text}}</span>
+        <span class="chat-entry-content">
+          <span class="chat-entry-info">
+            <username :cabal="cabal" :userid="message.key"/>
+            <span class="chat-time">{{message.value.timestamp | time}}</span>
+          </span>
+          <p class="chat-text">{{message.value.content.text}}</p>
+        </span>
       </li>
     </ul>
     <div class="chat-input">
@@ -45,7 +52,7 @@ module.exports = {
       this.messages = [];
       var startChannel = this.channel;
       // load messages
-      this.messageBackStream = this.cabal.messages.read(this.channel,{limit:50});
+      this.messageBackStream = this.cabal.messages.read(this.channel,{limit:100});
       // try reading the stream
       collect(this.messageBackStream, (er,data)=>{
         console.log('collected',er,data);
@@ -108,11 +115,5 @@ module.exports = {
   watch:{
     cabal:function(){this.reInit()},
     channel:function(){this.reInit()}
-  },
-  filters:{
-    time:function(ts){
-      var d = new Date(ts);
-      return d.getHours()%12 + ':'+d.getMinutes();
-    }
   }
 }

@@ -1,3 +1,4 @@
+var filters = require('../filters');
 
 module.exports = {
   props:{
@@ -19,7 +20,7 @@ module.exports = {
   computed:{
     username:function(){
       // TODO parse username from the cabal feed
-      return "conspirator "+this.userid.slice(0,4);
+      return "Conspirator "+filters.shorten(this.userid,10);
     }
   }
 }

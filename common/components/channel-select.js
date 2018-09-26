@@ -13,7 +13,7 @@ module.exports = {
   },
   template:`
   <div class="channels">
-    <h1>channels</h1>
+    <span class="sidebar-header">channels</span>
     <channel v-for="c in channels"
       :active="currentChannel == c"
       :channel="c"
@@ -21,6 +21,8 @@ module.exports = {
       @click.native="channelChangedTo(c)"
     >
     </channel>
+    <a class="sidebar-item" @click="enterChannel"><span class="plus-icon"></span>New</a>
+    <modal-prompt ref="prompt"/>
   </div>
   `,
   data:function(){
@@ -50,6 +52,7 @@ module.exports = {
         if(error){
           return;
         }
+        // add new channels
         channels.forEach(c=>{
           if (this.channels.indexOf(c) == -1 ){
             this.channels.push(c);
@@ -60,10 +63,25 @@ module.exports = {
     channelChangedTo(c){
       console.log('channel changed to...'+c)
       this.$emit('channelChanged',c)
+    },
+    enterChannel(){
+      this.$refs.prompt.prompt({question:"Enter a new channel name:"},(result)=>{
+        if (!result){// cancelled or ""
+          return;
+        }
+        this.channelChangedTo(result.toLowerCase());
+        this.channels.push(result.toLowerCase());
+      })
     }
   },
   watch:{
-    cabal:function(){this.updateChannels(true)},
+    cabal:function(){
+      this.channels=[];
+      this.updateChannels(true);
+      if(this.channels.indexOf(this.channel) == -1){
+        this.channelChangedTo('default')
+      }
+    },
     currentChannel:function(){this.updateChannels(true)}
   }
 

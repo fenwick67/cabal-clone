@@ -23,16 +23,10 @@ module.exports = {
 
       var bytes = hash(this.userid);
 
-      var n = bytes[0] + bytes[1]*256 + bytes[2]*65536 + bytes[3]*16777216;
-
-      var n1 = 360*((n % 1111)/1111);
-      var n2 = 360*((n % 2834)/2834);
-      var rot = 360*((n % 926)/926);
-      var w = 8 + 20 * ((n % 381)/381);
-      var w2 = 2*w;
-      var c = `hsla(${n1},60%,60%,0.7)`
-      var c2 = `hsla(${n2},60%,60%,1.0)`
-      return `background-image:repeating-linear-gradient(${rot-90}deg, transparent 0%, transparent ${w}%, ${c} ${w}%, ${c} ${w2}%), repeating-linear-gradient(${rot}deg, transparent 0%, transparent ${w}%, ${c2} ${w}%, ${c2} ${w2}%)`;
+      var rot = (bytes[6]%4) *45;
+      var c = `rgb(${bytes[0]},${bytes[1]},${bytes[2]})`
+      var c2 = `rgb(${bytes[3]},${bytes[4]},${bytes[5]})`
+      return `background-image:linear-gradient(${rot}deg, ${c} 0%, ${c} 49%, ${c2} 51%, ${c2} 100%)`;
     }
   }
 }
@@ -45,21 +39,3 @@ var hash = _.memoize(str=>{
   hash.update(str,'ascii');
   return hash.digest();
 })
-
-
-function genPlaceholder(userid){
-  // get a color for a userid
-
-  var bytes = hash(this.userid);
-
-  var n = bytes[0] + bytes[1]*256 + bytes[2]*65536 + bytes[3]*16777216 + bytes[4]*4294967296;
-
-  var n1 = 360*((n % 1111)/1111);
-  var n2 = 360*((n % 2834)/2834);
-  var rot = 360*((n % 926)/926);
-  var w = 8 + 20 * ((n % 381)/381);
-  var w2 = 2*w;
-  var c = `hsla(${n1},60%,60%,0.7)`
-  var c2 = `hsla(${n2},60%,60%,1.0)`
-  return `background-image:repeating-linear-gradient(${rot-90}deg, transparent 0%, transparent ${w}%, ${c} ${w}%, ${c} ${w2}%), repeating-linear-gradient(${rot}deg, transparent 0%, transparent ${w}%, ${c2} ${w}%, ${c2} ${w2}%)`;
-}
