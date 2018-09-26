@@ -78,7 +78,13 @@ const appView = new Vue({
 	methods:{
 		switchToCabal(key){
 			console.log('switching to key '+key)
-			// TODO validate the key first
+			// validate the key first
+			var key = key.replace(/cabal:\/\/|[^\w\d]/ig,'');
+			if (key.length != 64){
+				alert('key is wrong length :(')
+				return;
+			}
+
 			loadCabal(key,(er,cabal)=>{
 				if(er){
 					alert(er);
@@ -98,7 +104,7 @@ const appView = new Vue({
 			this.currentChannel = channelName;
 		},
 		addCabalPrompt(){
-			this.$refs.prompt.prompt({question:"Enter a cabal key (leave blank to create a new one):"},(result)=>{
+			this.$refs.prompt.prompt({question:"Enter a cabal key, with no protocol (leave blank to create a new one):"},(result)=>{
 				console.log('?')
 				if (result === false){
 					return;// cancelled
@@ -151,10 +157,11 @@ loadCabal = (key,done)=>{
 
 }
 
-// todo: why is `crypto` not available in electron?
 var randomKey = function(){
 	if(crypto.randomBytes){
 		return crypto.randomBytes(32).toString('hex');
+	}else if (crypto.getRandomValues){
+		return crypto.getRandomValues(new Uint8Array(32)).toString('hex');
 	}else{
 		var r = [];
 		for (var i = 0; i < 32; i ++){

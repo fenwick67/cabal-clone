@@ -21,8 +21,11 @@ module.exports = {
   template:`
   <div class="chat">
     <ul class="chat-entries">
+      <li class="chat-entry">
+        <p>This cabal's key is <code class="inline" type="text">{{cabal.key}}</code></p>
+      </li>
       <li v-if="messages.length == 0" class="chat-entry">
-        This channel is currently empty. As far as I know.
+        <p>This channel is currently empty. As far as I know.</p>
       </li>
       <li class="chat-entry" v-for="message in messages">
         <span class="chat-entry-left">

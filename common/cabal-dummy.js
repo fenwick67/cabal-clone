@@ -25,7 +25,7 @@ module.exports = function(){
     },
     publish:function(message,done){
       console.log('sending',message)
-      txQueue.push(message);// TODO the format is a bit different but not documented?
+      txQueue.push(message);
       done(null);
     },
     db:{

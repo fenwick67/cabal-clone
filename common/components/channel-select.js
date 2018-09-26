@@ -1,4 +1,3 @@
-// TODO let user create new channel
 
 module.exports = {
   props:{
@@ -76,7 +75,7 @@ module.exports = {
   },
   watch:{
     cabal:function(){
-      this.channels=[];
+      this.channels=['default'];
       this.updateChannels(true);
       if(this.channels.indexOf(this.channel) == -1){
         this.channelChangedTo('default')
