@@ -20,7 +20,7 @@ module.exports = {
   },
   template:`
   <div class="chat">
-    <ul class="chat-entries">
+    <ul class="chat-entries" ref="scrollable">
       <li class="chat-entry">
         <p>This cabal's key is <code class="inline" type="text">{{cabal.key}}</code></p>
       </li>
@@ -41,7 +41,7 @@ module.exports = {
       </li>
     </ul>
     <div class="chat-input">
-      <textarea v-model="currentMessage" />
+      <textarea v-model="currentMessage" @keyup.enter.prevent="sendMessage"/>
       <button @click="sendMessage">Send</button>
     </div>
   </div>`,
@@ -49,6 +49,10 @@ module.exports = {
     addMessage:function(m){
       if (validateMessage(m)){
         this.messages.push(m);
+        // inefficient but works for now
+        setTimeout(()=>{
+          this.$refs.scrollable.scrollTop = this.$refs.scrollable.scrollHeight;
+        },50)
       }
     },
     start:function(){

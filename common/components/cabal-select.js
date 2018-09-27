@@ -1,16 +1,11 @@
 module.exports = {
   data:function(){return {}},
-  props:['cabalKey','active'],
+  props:['plaintextKey','active'],
   template:`
   <a
     :class="[{ 'cabal-select__active': active },'cabal-select','sidebar-item']"
-    :title="cabalKey"
+    :title="plaintextKey"
   >
-    {{cabalKey | shorten(14)}}
-  </a>`,
-  methods:{
-    addCabal:function(){
-      this.$emit('addCabal');
-    }
-  }
+    {{plaintextKey | shorten(14)}}
+  </a>`
 }

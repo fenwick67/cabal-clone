@@ -153,14 +153,12 @@ input, textarea{
 }
 .sidebar-item{
   color:var(--sidebar-text-light);
-  padding:1rem 2rem;
+  padding:0.8rem 2rem;
   border-left:solid 0.5rem transparent;
   box-sizing: border-box;
   display:flex;
 }
-.sidebar-item *{
 
-}
 a.sidebar-item:hover{
   /* todo? */
 }
@@ -204,12 +202,16 @@ a.sidebar-item:hover{
 }
 .chat-entry-info{
   line-height:1em;
+  margin-bottom:
   font-weight:lighter;
   color:var(--text-color-light);
 }
 .chat-entry-info .username{
-  font-weight:bold;
+  font-weight:bolder;
   color:var(--text-color);
+}
+.chat-text{
+  margin-top:0.5rem;
 }
 .chat-input{
   height:3rem;

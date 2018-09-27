@@ -1,15 +1,16 @@
 const Vue = require('vue/dist/vue.js');
 const fs = require('fs-extra');
 var Cabal = require('cabal-core');
+// var Cabal = require('../common/cabal-dummy')
+
 var store = require('../common/store')
 var crypto = require('crypto');
-// var Cabal = require('../common/cabal-dummy')
+const cabalKeyForString = require('../common/cabal-key-for-string')
 
 var swarm = require('cabal-core/swarm');
 
 var defaultCabals = [
-	'0139fb0c42cd0ac9157d0ed31a4335e6ccb024c9f8800ffdfa6bb6ea93085953',// my local test cabal
-	'3ce433583266d7b2ed80e2b11fdc2f24b3643fa88e7602c6dc234f9228d25382'// the biggun
+	'0139fb0c42cd0ac9157d0ed31a4335e6ccb024c9f8800ffdfa6bb6ea93085953'// my local test cabal
 ];
 
 const filters = require('../common/filters');
@@ -39,9 +40,10 @@ const appView = new Vue({
 				<div class="sidebar-left">
 					<div class="cabals">
 						<span class="sidebar-header">cabals</span>
-						<cabal-select v-for="k in cabalKeys"
-							:cabalKey="k"
-							:active="activeCabalKey == k"
+						<cabal-select v-for="k in plaintextCabalKeys"
+							:plaintextKey="k"
+							:key="k"
+							:active="activeCabalPlaintextKey == k"
 							@click.native="switchToCabal(k)"
 						>
 						</cabal-select>
@@ -70,20 +72,17 @@ const appView = new Vue({
 		</div>
 	`,
 	data:{
-		cabalKeys:store.getOrCreate('cabalKeys',defaultCabals),// List<String>
+		plaintextCabalKeys:store.getOrCreate('plaintextCabalKeys',defaultCabals),// List<String>
 		keyToJoin:'',
 		currentChannel:"default",
 		activeCabal:null
 	},
 	methods:{
 		switchToCabal(key){
-			console.log('switching to key '+key)
 			// validate the key first
-			var key = key.replace(/cabal:\/\/|[^\w\d]/ig,'');
-			if (key.length != 64){
-				alert('key is wrong length :(')
-				return;
-			}
+
+
+			console.log('switching to key '+key)
 
 			loadCabal(key,(er,cabal)=>{
 				if(er){
@@ -93,9 +92,9 @@ const appView = new Vue({
 				}
 
 				this.activeCabal = cabal;
-				if(this.cabalKeys.indexOf(cabal.key) == -1){
-					this.cabalKeys.push(cabal.key);
-					store.set('cabalKeys',this.cabalKeys);
+				if(this.plaintextCabalKeys.indexOf(cabal.plaintextKey) == -1){
+					this.plaintextCabalKeys.push(cabal.plaintextKey);
+					store.set('plaintextCabalKeys',this.plaintextCabalKeys);
 				}
 
 			})
@@ -104,7 +103,7 @@ const appView = new Vue({
 			this.currentChannel = channelName;
 		},
 		addCabalPrompt(){
-			this.$refs.prompt.prompt({question:"Enter a cabal key, with no protocol (leave blank to create a new one):"},(result)=>{
+			this.$refs.prompt.prompt({question:"Enter a cabal key (leave blank to create a new one):"},(result)=>{
 				console.log('?')
 				if (result === false){
 					return;// cancelled
@@ -120,17 +119,31 @@ const appView = new Vue({
 	computed:{
 		activeCabalKey:function(){
 			return this.activeCabal?this.activeCabal.key:null;
+		},
+		activeCabalPlaintextKey:function(){
+			return this.activeCabal?this.activeCabal.plaintextKey:null;
 		}
 	}
 });
 
-loadCabal = (key,done)=>{
-	var key = key || randomKey();
-	if (cabalCache[key]){
-		return done(null,cabalCache[key]);
+var loadCabal = (plaintextKey,done)=>{
+	var key = plaintextKey;
+	if(key){
+		var edKey = key.replace(/cabal:\/\/|[^\w\d]/ig,'');
+		if (edKey.length == 64){
+			key = cabalKeyForString(edKey);
+		}else{
+			key = cabalKeyForString(plaintextKey);
+		}
+	}else{
+		key = randomKey();
+	}
+
+	if (cabalCache[plaintextKey]){
+		return done(null,cabalCache[plaintextKey]);
 	}
 	let homedir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-	let rootdir = homedir + '/.cabal-store/archives/';
+	let rootdir = homedir + '/.cabal-clone/archives/';
 	let dir = rootdir + (key?key:'');
 
 	let cabal = Cabal(dir,key);
@@ -141,6 +154,7 @@ loadCabal = (key,done)=>{
 		}else{
 			swarm(cabal);
 			cabalCache[key] = cabal;
+			cabal.plaintextKey = plaintextKey;
 			return done(er,cabal);
 		}
 	}
@@ -161,13 +175,22 @@ var randomKey = function(){
 	if(crypto.randomBytes){
 		return crypto.randomBytes(32).toString('hex');
 	}else if (crypto.getRandomValues){
-		return crypto.getRandomValues(new Uint8Array(32)).toString('hex');
+		return Array.prototype.slice.call(crypto.getRandomValues(new Uint8Array(32)))
+			.map(n=>{
+				var s = n.toString(16);
+				while(s.length < 2){s = '0'+s}
+			})
+			.join('');
 	}else{
 		var r = [];
 		for (var i = 0; i < 32; i ++){
 			r.push(Math.floor(256*Math.random()));
 		}
-		return r.map(n=>n.toString(16)).join('');
+		return r.map(n=>{
+			var s = n.toString(16);
+			while(s.length < 2){s = '0'+s}
+		})
+		.join('');
 	}
 }
 

@@ -26,7 +26,7 @@ module.exports = {
       var rot = (bytes[6]%4) *45;
       var c = `rgb(${bytes[0]},${bytes[1]},${bytes[2]})`
       var c2 = `rgb(${bytes[3]},${bytes[4]},${bytes[5]})`
-      return `background-image:linear-gradient(${rot}deg, ${c} 0%, ${c} 49%, ${c2} 51%, ${c2} 100%)`;
+      return `background-image:linear-gradient(${rot}deg, ${c} -10%, ${c} 49%, ${c2} 51%, ${c2} 110%)`;
     }
   }
 }

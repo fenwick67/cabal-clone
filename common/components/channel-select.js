@@ -16,6 +16,7 @@ module.exports = {
     <channel v-for="c in channels"
       :active="currentChannel == c"
       :channel="c"
+      :key="c"
       :cabal="cabal"
       @click.native="channelChangedTo(c)"
     >
