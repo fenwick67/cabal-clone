@@ -61,8 +61,9 @@ module.exports = {
       // load messages
       this.messageBackStream = this.cabal.messages.read(this.channel,{limit:100});
       // try reading the stream
+      this.$emit('loadStart');
       collect(this.messageBackStream, (er,data)=>{
-        console.log('collected',er,data);
+        this.$emit('loadEnd');
         if (this.channel != startChannel){
           return;// in case the channel changed
         }

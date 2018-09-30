@@ -9,9 +9,7 @@ const cabalKeyForString = require('../common/cabal-key-for-string')
 
 var swarm = require('cabal-core/swarm');
 
-var defaultCabals = [
-	'0139fb0c42cd0ac9157d0ed31a4335e6ccb024c9f8800ffdfa6bb6ea93085953'// my local test cabal
-];
+var defaultCabals = [];
 
 const filters = require('../common/filters');
 Object.keys(filters).forEach(k=>{
@@ -44,10 +42,11 @@ const appView = new Vue({
 							:plaintextKey="k"
 							:key="k"
 							:active="activeCabalPlaintextKey == k"
-							@click.native="switchToCabal(k)"
+							@select="switchToCabal(k)"
+							@remove="removeCabal(k)"
 						>
 						</cabal-select>
-						<a class="sidebar-item" @click="addCabalPrompt"><span class="plus-icon"></span>Add</a>
+						<a class="sidebar-item " @click="addCabalPrompt"><span class="plus-icon"></span>Add</a>
 						<!--
 							<a class="sidebar-item" @click="switchToCabal(null)">New</a>
 							<div class="sidebar-item">
@@ -66,25 +65,38 @@ const appView = new Vue({
 					</channel-select>
 				</div>
 			</div>
-			<chat v-if="activeCabal" :cabal="activeCabal" :channel="currentChannel">
-			</chat>
+			<chat
+				v-if="activeCabal"
+				:cabal="activeCabal"
+				:channel="currentChannel"
+				@loadStart="e=>this.loading=true"
+				@loadEnd="e=>this.loading=false"
+			></chat>
+			<div v-else class="chat">
+				<ul class="chat-entries">
+					<li class="chat-entry">Welcome</li>
+					<li class="chat-entry">⯇ select or create a Cabal to start chatting</li>
+				</ul>
+			</div>
 			<modal-prompt ref="prompt"/>
+			<div class="loader" v-if="loading"/>
 		</div>
 	`,
 	data:{
 		plaintextCabalKeys:store.getOrCreate('plaintextCabalKeys',defaultCabals),// List<String>
 		keyToJoin:'',
 		currentChannel:"default",
-		activeCabal:null
+		activeCabal:null,
+		loading:false
 	},
 	methods:{
-		switchToCabal(key){
+		switchToCabal(plaintextKey){
 			// validate the key first
 
-
-			console.log('switching to key '+key)
-
-			loadCabal(key,(er,cabal)=>{
+			console.log('switching to key '+plaintextKey)
+			this.loading = true;
+			loadCabal(plaintextKey,(er,cabal)=>{
+				this.loading = false;
 				if(er){
 					alert(er);
 					console.error(er);
@@ -92,19 +104,29 @@ const appView = new Vue({
 				}
 
 				this.activeCabal = cabal;
-				if(this.plaintextCabalKeys.indexOf(cabal.plaintextKey) == -1){
-					this.plaintextCabalKeys.push(cabal.plaintextKey);
+				var idx = this.plaintextCabalKeys.indexOf(cabal.plaintextKey)
+				if(idx == -1){
+					this.plaintextCabalKeys.push(plaintextKey);
 					store.set('plaintextCabalKeys',this.plaintextCabalKeys);
 				}
 
 			})
 		},
+		removeCabal(plaintextKey){
+			if (this.activeCabal && this.activeCabal.plaintextKey === plaintextKey){
+				this.activeCabal = null;
+			}
+			var idx = this.plaintextCabalKeys.indexOf(plaintextKey);
+			if(idx >-1){
+				this.plaintextCabalKeys.splice(idx,1);
+				store.set('plaintextCabalKeys',this.plaintextCabalKeys);
+			}
+		},
 		setChannel(channelName){
 			this.currentChannel = channelName;
 		},
 		addCabalPrompt(){
-			this.$refs.prompt.prompt({question:"Enter a cabal key (leave blank to create a new one):"},(result)=>{
-				console.log('?')
+			this.$refs.prompt.prompt({question:"Enter an invite code or key (leave blank to create a new one):"},(result)=>{
 				if (result === false){
 					return;// cancelled
 				}
@@ -127,24 +149,14 @@ const appView = new Vue({
 });
 
 var loadCabal = (plaintextKey,done)=>{
-	var key = plaintextKey;
-	if(key){
-		var edKey = key.replace(/cabal:\/\/|[^\w\d]/ig,'');
-		if (edKey.length == 64){
-			key = cabalKeyForString(edKey);
-		}else{
-			key = cabalKeyForString(plaintextKey);
-		}
-	}else{
-		key = randomKey();
-	}
+	var key = cabalKeyForString(plaintextKey);
 
 	if (cabalCache[plaintextKey]){
 		return done(null,cabalCache[plaintextKey]);
 	}
 	let homedir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 	let rootdir = homedir + '/.cabal-clone/archives/';
-	let dir = rootdir + (key?key:'');
+	let dir = rootdir + key;
 
 	let cabal = Cabal(dir,key);
 
@@ -153,7 +165,7 @@ var loadCabal = (plaintextKey,done)=>{
 			return done(er);
 		}else{
 			swarm(cabal);
-			cabalCache[key] = cabal;
+			cabalCache[plaintextKey] = cabal;
 			cabal.plaintextKey = plaintextKey;
 			return done(er,cabal);
 		}

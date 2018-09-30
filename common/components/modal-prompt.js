@@ -2,11 +2,11 @@ module.exports = {
 
   template:`
     <div class="modal-ancestor">
-      <div class="modal-background" v-if="showing">
+      <div class="modal-background" v-show="showing">
         <div class="modal">
           <span class="modal-content">
             <p>{{question}}</p>
-            <input v-model="text"/>
+            <input v-model="text" ref="textinput"/>
           </span>
           <span class="modal-bottom">
             <button class="button" @click="ok">ok</button>
@@ -48,6 +48,15 @@ module.exports = {
       this._doneFn=null;
       this.showing = false;
       this.text="";
+    }
+  },
+  watch:{
+    showing:function(newVal){
+      if(newVal){
+        setTimeout(x=>{
+          this.$refs.textinput.focus();
+        },1)
+      }
     }
   }
 

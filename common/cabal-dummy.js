@@ -1,3 +1,5 @@
+// if you don't want to worry about network stuff
+
 const { Readable } = require('stream');
 
 const DummyReadable = function(){
@@ -12,19 +14,29 @@ const DummyReadable = function(){
 
 }
 
-module.exports = function(){
+module.exports = function(something,key){
 
   var i = 1;
   var interval = null;
   var txQueue = [];
 
   var cabal =  {
-    key:"TEST",
+    key:key,
     getLocalKey:function(cb){
-      return cb(null,"TEST")
+      return cb(null,key)
     },
-    publish:function(message,done){
-      console.log('sending',message)
+    publish:function(m,done){
+      var message = {
+        key:"98765432109876543210987654321098",
+        value:{
+          type: 'chat/text',
+          timestamp:Date.now(),
+          content: {
+            text:m.content.text,
+            channel:m.content.channel
+          }
+        }
+      };
       txQueue.push(message);
       done(null);
     },
@@ -53,10 +65,14 @@ module.exports = function(){
 
             // TODO: wat does this object really look like?
             callback({
-              type: 'text/chat',
-              content: {
-                text: 'message '+(i++),
-                channel: channel
+              key:"12345678901234568790123456789012",
+              value:{
+                type: 'chat/text',
+                timestamp:Date.now(),
+                content: {
+                  text: 'message '+(i++),
+                  channel: channel
+                }
               }
             });
 

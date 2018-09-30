@@ -2,8 +2,8 @@ module.exports = function(m){
   if(
     !m ||
     !m.key ||
-    m.value.type !== 'chat/text' ||
     !m.value ||
+    m.value.type !== 'chat/text' ||
     !m.value.content ||
     !m.value.content.channel ||
     !m.value.content.text ||
