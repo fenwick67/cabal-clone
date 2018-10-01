@@ -308,7 +308,7 @@ a.sidebar-item:hover{
   height:5rem;
   line-height:100%;
   font-size: 5rem;
-  animation:spin 1s linear;
+  animation:spin 1s linear infinite;
 }
 @keyframes spin{
   0%{
