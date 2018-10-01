@@ -12,15 +12,39 @@ module.exports = {
     }
   },
   data:function(){
-    return {}
+    return {
+      nick:null,
+      pollInterval:null,
+      pollLock:null
+    }
   },
   template:`
-  <span class="username">{{username}}</span>
+  <span class="username">{{nick||username | shorten(30) }}</span>
   `,
   computed:{
     username:function(){
       // TODO parse username from the cabal feed
-      return "Conspirator "+filters.shorten(this.userid,10);
+      return "Conspirator "+this.userid;
     }
+  },
+  created:function(){
+    if (nicknameCache[this.userid]){
+      this.nick = nicknameCache[this.userid];
+      return;
+    }
+    this.cabal.users.get(this.userid,(er,result)=>{
+      this.pollLock=false;
+      if(er){
+        console.error(er);
+        return
+      }
+      if(result && result.name){
+        this.nick = result.name;
+        nicknameCache[this.userid] = this.nick;
+      }
+    })
   }
 }
+
+// global cache of id:username
+var nicknameCache = {}

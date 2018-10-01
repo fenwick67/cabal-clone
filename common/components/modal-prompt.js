@@ -9,8 +9,8 @@ module.exports = {
             <input v-model="text" ref="textinput"/>
           </span>
           <span class="modal-bottom">
-            <button class="button" @click="ok">ok</button>
-            <button class="button" @click="cancel">cancel</button>
+            <button @click="ok">ok</button>
+            <button class="button__light" @click="cancel">cancel</button>
           </span>
         </div>
       </div>
@@ -25,9 +25,12 @@ module.exports = {
     };
   },
   methods:{
+    // cancel => done(false)
+    // ok => done(result)
     prompt:function(options,doneFn){
 
       this.question = options.question;
+      this.text = options.answer||'';
       this._doneFn = doneFn;
       // now show
       this.showing = true;

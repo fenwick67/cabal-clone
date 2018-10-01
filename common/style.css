@@ -1,16 +1,4 @@
 :root{
-  /*
-  --sidebar-bg:#00052a ;
-  --sidebar-bg-light:#1e1033 ;
-  --sidebar-text:#ca4e64;
-  --sidebar-text-light:#ac435b;
-  */
-  /*
-  --sidebar-bg:#100d07;
-  --sidebar-bg-light:#1b252a;
-  --sidebar-text:#58acf3;
-  --sidebar-text-light:#4d94d0;
-  */
   --sidebar-bg: hsl(0, 0%, 15%);
   --sidebar-bg-light: hsla(21, 100%, 50%, 1);
   --sidebar-text: #f7f7f7;
@@ -22,6 +10,7 @@
   --text-color-light:hsl(0,0%,50%);
   --button-bg:var(--sidebar-bg);
   --button-bg-accent:var(--sidebar-bg-light);
+  --button-bg-light:#555;
   --border-color:rgba(0,0,0,0.1);
   --modal-bg:rgba(0,0,0,0.5);
 }
@@ -361,8 +350,11 @@ button{
 button.button__accent,.remove-cabal{
   background:var(--button-bg-accent);
 }
-button.button__small,{
+button.button__small{
   padding:0.2rem 0.4rem;
+}
+button.button__light{
+  background:var(--button-bg-light);
 }
 .remove-cabal{
   width:1rem;

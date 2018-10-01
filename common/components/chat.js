@@ -6,7 +6,9 @@ module.exports = {
     currentMessage:'',
     messages:[],
     messageListener:null,// [object, event, handler], for removing listener later
-    messageBackStream:null
+    messageBackStream:null,
+    username:null,
+    localKey:null
   }},
   props:{
     "cabal":{
@@ -41,9 +43,15 @@ module.exports = {
       </li>
     </ul>
     <div class="chat-input">
-      <textarea v-model="currentMessage" @keyup.enter.prevent="sendMessage"/>
+      <textarea
+        v-model="currentMessage"
+        @keyup.enter.prevent="sendMessage"
+        :placeholder="'type something, '+(username||localKey||'') | shorten(30)"
+      />
       <button @click="sendMessage">Send</button>
+      <button @click="promptUsername" class="button__light button__small">⚙&#xFE0E;</button>
     </div>
+    <modal-prompt ref="usernamePrompt"/>
   </div>`,
   methods:{
     addMessage:function(m){
@@ -57,6 +65,7 @@ module.exports = {
     },
     start:function(){
       this.messages = [];
+      this.username = null;
       var startChannel = this.channel;
       // load messages
       this.messageBackStream = this.cabal.messages.read(this.channel,{limit:100});
@@ -77,6 +86,19 @@ module.exports = {
       // listen for new messages
       this.cabal.messages.events.on(this.channel, this.addMessage)
       this.messageListener = [this.cabal.messages.events, this.channel, this.addMessage];
+
+      // check my username
+      this.cabal.getLocalKey((er,key)=>{
+        if(er){return console.error(er);}
+        this.localKey=key;
+        if(!this.cabal){return}
+        this.cabal.users.get(key,(er,result)=>{
+          if(er){return console.error(er);}
+          if(result.name){
+            this.username = result.name;
+          }
+        })
+      });
     },
     stop:function(){
       // remove listeners
@@ -107,11 +129,23 @@ module.exports = {
           console.error(er);
         }else{
           console.log('published message:',entry)
-          // should get added to database and therefore message list automatically?
-          // IDK
           this.currentMessage='';
         }
       });
+    },
+    promptUsername:function(){
+      this.$refs.usernamePrompt.prompt({question:'enter a username',answer:this.username},result=>{
+        if(!result){
+          return
+        }
+        if(this.username == result){return}// no change
+        this.username=result;
+        this.cabal.publishNick(this.username,(er,result)=>{
+          if(er){
+            console.log(er);
+          }
+        });
+      })
     }
   },
   created:function(){
