@@ -49,6 +49,7 @@
   --button-bg-light:var(--gb-dm-dark-gray);
   --button-bg-light-hover:var(--gb-dm-light-gray);
   --border-color:var(--gb-dm-fg2);
+  --remove-color:var(--gb-dm-light-orange);
   --modal-bg:rgba(0,0,0,0.5);
   --window-border-color:var(--gb-dm-bg0-hard);
 }
@@ -222,6 +223,7 @@ input, textarea{
   font-weight:bold;
   text-transform: uppercase;
   font-size:1.2rem;
+  cursor:default;
 }
 .sidebar-item{
   color:var(--sidebar-text-light);
@@ -229,6 +231,9 @@ input, textarea{
   border-left:solid 0.5rem transparent;
   box-sizing: border-box;
   display:flex;
+}
+.sidebar-item,.sidebar-header,.button{
+  user-select: none;
 }
 .sidebar-item:hover{
   background:var(--button-bg-hover);
@@ -422,13 +427,15 @@ a.sidebar-item:hover{
   font-size:1.2rem;
   padding:0.6rem 1.2rem;
   -webkit-app-region: no-drag;
-  user-select: none;
 }
 .button:hover{
   background:var(--button-bg-hover);
 }
-.button.button__accent,.remove-cabal{
+.button.button__accent{
   background:var(--button-bg-accent);
+}
+.remove-cabal{
+  background:var(--remove-color);
 }
 .button.button__small{
   padding:0.2rem 0.4rem;

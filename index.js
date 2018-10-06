@@ -1,4 +1,4 @@
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
 
 let win
 
@@ -22,7 +22,15 @@ function createWindow(){
 		setTimeout(f=>{
 			process.exit(0);
 		},500);
-  })
+  });
+
+	ipcMain.on('maximize',event=>{
+		win.isMaximized()?win.unmaximize():win.maximize();
+	});
+
+	ipcMain.on('minimize',event=>{
+		win.minimize();
+	});
 }
 
 app.on('ready', createWindow)

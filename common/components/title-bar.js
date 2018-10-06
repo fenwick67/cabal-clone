@@ -1,3 +1,5 @@
+const {ipcRenderer} = require('electron')
+
 module.exports = {
 
   template:`
@@ -5,13 +7,21 @@ module.exports = {
       <img class="title-bar-icon" src="icon.png"/>
       <span class="title-bar-title">Cabal Clone</span>
       <span class="title-bar-end">
-        <a class="button button__light title-bar-button" @click="close">✖</a>
+        <a class="button button__light title-bar-button" @click="minimize">—&#xFE0E;</a>
+        <a class="button button__light title-bar-button" @click="maximize">⬜&#xFE0E;</a>
+        <a class="button button__light title-bar-button" @click="close">✖&#xFE0E;</a>
       </span>
     </div>
     `,
     methods:{
       close:function(){
         window.close();
+      },
+      maximize:function(){
+        ipcRenderer.send('maximize');
+      },
+      minimize:function(){
+        ipcRenderer.send('minimize');
       }
     }
 }
