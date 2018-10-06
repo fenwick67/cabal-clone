@@ -8,7 +8,7 @@ module.exports = {
     @click="select"
   >
     <span>{{plaintextKey | shorten(14)}}</span>
-    <a class="focusable remove-cabal" title="remove" @click.stop.prevent="remove">-</a>
+    <a class="focusable remove-cabal" title="remove" @click.stop.prevent="remove">−</a>
   </a>`,
   methods:{
     select:function(){

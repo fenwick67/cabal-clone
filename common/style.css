@@ -1,18 +1,56 @@
 :root{
-  --sidebar-bg: hsl(0, 0%, 15%);
-  --sidebar-bg-light: hsla(21, 100%, 50%, 1);
-  --sidebar-text: #f7f7f7;
-  --sidebar-text-light: #e0e0e0;
-  --sidebar-highlight-color:var(--sidebar-bg-light);
+
+  /* gruvbox colors */
+  --gb-dm-bg0: #282828;
+  --gb-dm-bg0-hard: #1d2021;
+  --gb-dm-bg0-soft: #32302f;
+  --gb-dm-bg1: #3c3836;
+  --gb-dm-bg2: #504945;
+  --gb-dm-bg3: #665c54;
+  --gb-dm-bg4: #7c6f64;
+
+  --gb-dm-fg0: #fbf1c7;
+  --gb-dm-fg1: #ebdbb2;
+  --gb-dm-fg2: #d5c4a1;
+  --gb-dm-fg3: #bdae93;
+  --gb-dm-fg4: #a89984;
+
+  --gb-dm-dark-red: #cc241d;
+  --gb-dm-dark-green: #98971a;
+  --gb-dm-dark-yellow: #d79921;
+  --gb-dm-dark-blue: #458588;
+  --gb-dm-dark-purple: #b16286;
+  --gb-dm-dark-aqua: #689d6a;
+  --gb-dm-dark-orange: #d65d0e;
+  --gb-dm-dark-gray: #928374;
+
+  --gb-dm-light-red: #fb4934;
+  --gb-dm-light-green: #b8bb26;
+  --gb-dm-light-yellow: #fabd2f;
+  --gb-dm-light-blue: #83a598;
+  --gb-dm-light-purple: #d3869b;
+  --gb-dm-light-aqua: #8ec07c;
+  --gb-dm-light-orange: #f38019;
+  --gb-dm-light-gray: #a89984;
+
+  --sidebar-bg: var(--gb-dm-bg0);
+  --highlight-color:var(--gb-dm-light-orange);
+  --highlight-color-dark:var(--gb-dm-dark-orange);
+  --sidebar-bg-light: var(--highlight-color);
+  --sidebar-text: var(--gb-dm-fg0);
+  --sidebar-text-light: var(--gb-dm-fg3);
   --bg-color:var(--sidebar-text);
-  --bg-color-dark:var(--sidebar-text-light);
-  --text-color:hsl(0,0%,10%);
-  --text-color-light:hsl(0,0%,50%);
+  --bg-color-dark:var(--gb-dm-fg1);
+  --text-color:var(--gb-dm-bg0);
+  --text-color-light:var(--gb-dm-bg3);
   --button-bg:var(--sidebar-bg);
+  --button-bg-hover:var(--gb-dm-bg1);
   --button-bg-accent:var(--sidebar-bg-light);
-  --button-bg-light:#555;
-  --border-color:rgba(0,0,0,0.1);
+  --button-bg-light:var(--gb-dm-dark-gray);
+  --button-bg-light-hover:var(--gb-dm-light-gray);
+  --border-color:var(--gb-dm-fg2);
   --modal-bg:rgba(0,0,0,0.5);
+  --window-border-color:var(--gb-dm-bg0-hard);
 }
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -68,21 +106,21 @@ table {
   width: 1em;
 }
 ::-webkit-scrollbar-track {
+  background-color: var(--bg-color-dark);
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--sidebar-bg-light);
+  background-color: var(--highlight-color);
 }
-
-input:focus,button:focus,.focusable:focus{
+::-webkit-scrollbar-thumb:hover{
+  background-color:var(--highlight-color-dark)
+}
+input:focus,.button:focus,.focusable:focus,textarea:focus{
   outline-style:dashed;
   outline-width:2px;
   outline-color:var(--sidebar-bg-light);
 }
-textarea:focus{
-  outline: none;
-}
 
-body,html,.app{
+body,html{
   width:100%;
   height:100%;
   margin:0;
@@ -93,9 +131,45 @@ body,html,.app{
   font-family:'Roboto', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
   font-size:16px;
 }
+body{
+  box-sizing:border-box;
+  border:solid 1px var(--window-border-color);
+}
+.frame{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  box-sizing: border-box;
+}
+.title-bar{
+  flex-shrink:0;
+  display:flex;
+  z-index:10000;
+  height:2.5rem;
+  -webkit-app-region: drag;
+  background:var(--button-bg-light);
+  color:var(--sidebar-text);
+  width:100%;
+  align-items: center;
+}
+.title-bar .title-bar-title{
+  flex-grow:1;
+  text-transform: uppercase;
+}
+.title-bar .button{
+  height:100%;
+  display:inline-block;
+  padding:0 1rem;
+  line-height:200%;
+}
+.title-bar .title-bar-icon{
+  width:1.5rem;
+  height:1.5rem;
+  margin:0.5rem;
+}
 .app{
   display:flex;
-  height:100%;
+  flex-grow:1;
   width:100%;
   margin:0;
   padding:0;
@@ -116,7 +190,7 @@ a{
   overflow-y:auto;
   overflow-x: hidden;
   flex-shrink:0;
-  flex-grow:0;
+  flex-grow:1;
 }
 input, textarea{
   display:block;
@@ -156,6 +230,9 @@ input, textarea{
   box-sizing: border-box;
   display:flex;
 }
+.sidebar-item:hover{
+  background:var(--button-bg-hover);
+}
 .sidebar-item__pilled{
   justify-content:space-between;
 }
@@ -173,13 +250,11 @@ a.sidebar-item:hover{
 }
 .cabal-select__active,.channel__active{
   color:var(--sidebar-text);
-  font-weight:bolder;
-  border-left:solid 0.5rem var(--sidebar-highlight-color);
+  border-left:solid 0.5rem var(--highlight-color);
 }
 .chat{
   flex-grow:1;
   width:100%;
-  height:100%;
   display:flex;
   flex-direction:column;
 }
@@ -188,7 +263,7 @@ a.sidebar-item:hover{
 }
 .chat-entries{
   flex: 1 1 auto;
-  overflow-y:scroll;
+  overflow-y:auto;
   display:block;
   margin:0;
   padding:0;
@@ -237,7 +312,7 @@ a.sidebar-item:hover{
   resize:none;
   flex: 1 1 auto;
 }
-.chat-input button{
+.chat-input .button{
   display:block;
 }
 .avatar{
@@ -246,16 +321,16 @@ a.sidebar-item:hover{
   height: 2rem;
 }
 .plus-icon{
-  width:1em;
-  height:1em;
+  width:15px;
+  height:15px;
   position:relative;
-  margin:0 0.4em 0 0;
+  margin:3px 10px 0 0;
 }
 .plus-icon::before{
   content:"";
   position:absolute;
-  top:0.4em;
-  height:0.2em;
+  top:40%;
+  height:20%;
   width:100%;
   display:block;
   background-color:currentcolor;
@@ -263,8 +338,8 @@ a.sidebar-item:hover{
 .plus-icon::after{
   content:"";
   position:absolute;
-  left:0.4em;
-  width:0.2em;
+  left:40%;
+  width:20%;
   height:100%;
   display:block;
   background-color:currentcolor;
@@ -338,7 +413,7 @@ a.sidebar-item:hover{
   padding:0 2rem 1rem;
   justify-content:space-between;
 }
-button{
+.button{
   text-transform:uppercase;
   background:var(--button-bg);
   color:var(--sidebar-text);
@@ -346,17 +421,26 @@ button{
   cursor:pointer;
   font-size:1.2rem;
   padding:0.6rem 1.2rem;
+  -webkit-app-region: no-drag;
+  user-select: none;
 }
-button.button__accent,.remove-cabal{
+.button:hover{
+  background:var(--button-bg-hover);
+}
+.button.button__accent,.remove-cabal{
   background:var(--button-bg-accent);
 }
-button.button__small{
+.button.button__small{
   padding:0.2rem 0.4rem;
 }
-button.button__light{
+.button.button__light{
   background:var(--button-bg-light);
 }
+.button.button__light:hover{
+  background:var(--button-bg-light-hover);
+}
 .remove-cabal{
+  user-select: none;
   width:1rem;
   height:1rem;
   padding:0;
@@ -364,4 +448,5 @@ button.button__light{
   text-align:center;
   line-height:1rem;
   flex-shrink: 0;
+  color:var(--sidebar-text);
 }

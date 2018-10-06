@@ -9,8 +9,8 @@ module.exports = {
             <input v-model="text" ref="textinput"/>
           </span>
           <span class="modal-bottom">
-            <button @click="ok">ok</button>
-            <button class="button__light" @click="cancel">cancel</button>
+            <button class="button" @click="ok">ok</button>
+            <button class="button button__light" @click="cancel">cancel</button>
           </span>
         </div>
       </div>

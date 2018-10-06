@@ -23,7 +23,8 @@ const components = [
 	'modal-prompt',
 	'chat',
 	'avatar',
-	'username'
+	'username',
+	'title-bar'
 ];
 
 components.forEach(componentName=>{
@@ -33,53 +34,56 @@ components.forEach(componentName=>{
 const appView = new Vue({
 	el:"#app",
 	template:`
-		<div class="app">
-			<div class="sidebar">
-				<div class="sidebar-left">
-					<div class="cabals">
-						<span class="sidebar-header">cabals</span>
-						<cabal-select v-for="k in plaintextCabalKeys"
-							:plaintextKey="k"
-							:key="k"
-							:active="activeCabalPlaintextKey == k"
-							@select="switchToCabal(k)"
-							@remove="removeCabal(k)"
-						>
-						</cabal-select>
-						<a class="sidebar-item " @click="addCabalPrompt"><span class="plus-icon"></span>Add</a>
-						<!--
-							<a class="sidebar-item" @click="switchToCabal(null)">New</a>
-							<div class="sidebar-item">
-								<input type="text" v-model="keyToJoin" placeholder="put cabal key here"></input>
-								<a class="button" @click="joinCabal">&nbsp;Join</a>
-							</div>
-						-->
+		<div class="frame">
+			<title-bar/>
+			<div class="app">
+				<div class="sidebar">
+					<div class="sidebar-left">
+						<div class="cabals">
+							<span class="sidebar-header">cabals</span>
+							<cabal-select v-for="k in plaintextCabalKeys"
+								:plaintextKey="k"
+								:key="k"
+								:active="activeCabalPlaintextKey == k"
+								@select="switchToCabal(k)"
+								@remove="removeCabal(k)"
+							>
+							</cabal-select>
+							<a class="sidebar-item " @click="addCabalPrompt"><span class="plus-icon"></span>Add</a>
+							<!--
+								<a class="sidebar-item" @click="switchToCabal(null)">New</a>
+								<div class="sidebar-item">
+									<input type="text" v-model="keyToJoin" placeholder="put cabal key here"></input>
+									<a class="" @click="joinCabal">&nbsp;Join</a>
+								</div>
+							-->
+					</div>
+					</div>
+					<div class="sidebar-right">
+						<channel-select
+							v-if="activeCabal && activeCabal.key"
+							:cabal="activeCabal"
+							:currentChannel="currentChannel"
+							@channelChanged="setChannel">
+						</channel-select>
+					</div>
 				</div>
+				<chat
+					v-if="activeCabal"
+					:cabal="activeCabal"
+					:channel="currentChannel"
+					@loadStart="e=>this.loading=true"
+					@loadEnd="e=>this.loading=false"
+				></chat>
+				<div v-else class="chat">
+					<ul class="chat-entries">
+						<li class="chat-entry">Welcome</li>
+						<li class="chat-entry">⯇ Select or create a Cabal to start chatting</li>
+					</ul>
 				</div>
-				<div class="sidebar-right">
-					<channel-select
-						v-if="activeCabal && activeCabal.key"
-						:cabal="activeCabal"
-						:currentChannel="currentChannel"
-						@channelChanged="setChannel">
-					</channel-select>
-				</div>
+				<modal-prompt ref="prompt"/>
+				<div class="loader" v-if="loading"/>
 			</div>
-			<chat
-				v-if="activeCabal"
-				:cabal="activeCabal"
-				:channel="currentChannel"
-				@loadStart="e=>this.loading=true"
-				@loadEnd="e=>this.loading=false"
-			></chat>
-			<div v-else class="chat">
-				<ul class="chat-entries">
-					<li class="chat-entry">Welcome</li>
-					<li class="chat-entry">⯇ select or create a Cabal to start chatting</li>
-				</ul>
-			</div>
-			<modal-prompt ref="prompt"/>
-			<div class="loader" v-if="loading"/>
 		</div>
 	`,
 	data:{
@@ -87,7 +91,8 @@ const appView = new Vue({
 		keyToJoin:'',
 		currentChannel:"default",
 		activeCabal:null,
-		loading:false
+		loading:false,
+		isMobile:false
 	},
 	methods:{
 		switchToCabal(plaintextKey){

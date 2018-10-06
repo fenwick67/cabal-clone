@@ -27,7 +27,7 @@ module.exports = {
         <p>This cabal's key is <code class="inline" type="text">{{cabal.key}}</code></p>
       </li>
       <li v-if="messages.length == 0" class="chat-entry">
-        <p>This channel is currently empty. As far as I know.</p>
+        <p>This channel is currently empty, as far as I know.</p>
       </li>
       <li class="chat-entry" v-for="message in messages">
         <span class="chat-entry-left">
@@ -45,11 +45,11 @@ module.exports = {
     <div class="chat-input">
       <textarea
         v-model="currentMessage"
-        @keyup.enter.prevent="sendMessage"
-        :placeholder="'type something, '+(username||localKey||'') | shorten(30)"
+        @keydown.enter.prevent.stop="sendMessage"
+        :placeholder="'Type something, '+(username||localKey||'') | shorten(30)"
       />
-      <button @click="sendMessage">Send</button>
-      <button @click="promptUsername" class="button__light button__small">⚙&#xFE0E;</button>
+      <button @click="sendMessage" class="button">Send</button>
+      <button @click="promptUsername" class="button button__light button__small">⚙&#xFE0E;</button>
     </div>
     <modal-prompt ref="usernamePrompt"/>
   </div>`,
@@ -116,6 +116,10 @@ module.exports = {
       this.start();
     },
     sendMessage:function(){
+      if(!this.currentMessage || this.currentMessage.replace(/\n/g,'').length < 1){
+        this.currentMessage='';
+        return false;
+      }
       var entry = {
         type: 'chat/text',
         content: {
@@ -134,7 +138,7 @@ module.exports = {
       });
     },
     promptUsername:function(){
-      this.$refs.usernamePrompt.prompt({question:'enter a username',answer:this.username},result=>{
+      this.$refs.usernamePrompt.prompt({question:'Enter a username to use in this cabal',answer:this.username},result=>{
         if(!result){
           return
         }
