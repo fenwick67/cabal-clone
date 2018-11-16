@@ -68,7 +68,7 @@ module.exports = {
       this.username = null;
       var startChannel = this.channel;
       // load messages
-      this.messageBackStream = this.cabal.messages.read(this.channel,{limit:100});
+      this.messageBackStream = this.cabal.messages.read(this.channel,{limit:1000});
       // try reading the stream
       this.$emit('loadStart');
       collect(this.messageBackStream, (er,data)=>{

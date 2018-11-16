@@ -44,7 +44,7 @@ var hash = _.memoize(str=>{
 
 // make sure to update this when colors change
 var color1 = function(n){
-  var colors = [ '#3a4044','#5B6166','#747B82','#BAC7D1','#eff7ff'];
+  var colors = ['#242729','#3a4044','#5B6166','#747B82','#BAC7D1'];
   return colors[n%colors.length];
 }
 
