@@ -24,9 +24,10 @@ module.exports = {
       var bytes = hash(this.userid);
 
       var rot = (bytes[6]%4) *45;
-      var c = `rgb(${bytes[0]},${bytes[1]},${bytes[2]})`
-      var c2 = `rgb(${bytes[3]},${bytes[4]},${bytes[5]})`
-      return `background-image:linear-gradient(${rot}deg, ${c} -10%, ${c} 49%, ${c2} 51%, ${c2} 110%)`;
+      var c = color1(bytes[0])
+      var c2 = color2(bytes[1])
+      var pct = bytes[2]*60/255+20; 
+      return `background-image:linear-gradient(${rot}deg, ${c} -10%, ${c} ${pct}%, ${c2} ${pct+1}%, ${c2} 110%)`;
     }
   }
 }
@@ -39,3 +40,15 @@ var hash = _.memoize(str=>{
   hash.update(str,'ascii');
   return hash.digest();
 })
+
+
+// make sure to update this when colors change
+var color1 = function(n){
+  var colors = [ '#3a4044','#5B6166','#747B82','#BAC7D1','#eff7ff'];
+  return colors[n%colors.length];
+}
+
+var color2 = function(n){
+  var colors = ['#37A3FF','#2C82CC'];
+  return colors[n%colors.length];
+}

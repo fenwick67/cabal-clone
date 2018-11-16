@@ -1,3 +1,4 @@
 doc/*.png filter=lfs diff=lfs merge=lfs -text
 desktop/icon.bmp filter=lfs diff=lfs merge=lfs -text
 desktop/icon.png filter=lfs diff=lfs merge=lfs -text
+desktop/icon.ico filter=lfs diff=lfs merge=lfs -text

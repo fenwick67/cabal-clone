@@ -9,7 +9,7 @@ module.exports = {
       <span class="title-bar-end">
         <a class="button button__light title-bar-button" @click="minimize">—&#xFE0E;</a>
         <a class="button button__light title-bar-button" @click="maximize">⬜&#xFE0E;</a>
-        <a class="button button__light title-bar-button" @click="close">✖&#xFE0E;</a>
+        <a class="button button__light button__close title-bar-button" @click="close">✖&#xFE0E;</a>
       </span>
     </div>
     `,

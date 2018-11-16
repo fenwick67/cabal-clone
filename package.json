@@ -13,7 +13,7 @@
   "author": "",
   "license": "(c)",
   "dependencies": {
-    "cabal-core": "^3.0.2",
+    "cabal-core": "^3.0.4",
     "collect-stream": "^1.2.1",
     "fs-extra": "^7.0.0",
     "lodash": "^4.17.11",
@@ -21,7 +21,7 @@
     "vue": "^2.5.17"
   },
   "devDependencies": {
-    "electron": "^2.0.11",
+    "electron": "^2.0.12",
     "electron-packager": "^12.2.0"
   }
 }

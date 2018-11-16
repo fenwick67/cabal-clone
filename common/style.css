@@ -1,6 +1,6 @@
 :root{
 
-  /* gruvbox colors */
+  /* gruvbox colors. Not used, good for reference tho */
   --gb-dm-bg0: #282828;
   --gb-dm-bg0-hard: #1d2021;
   --gb-dm-bg0-soft: #32302f;
@@ -33,25 +33,41 @@
   --gb-dm-light-orange: #f38019;
   --gb-dm-light-gray: #a89984;
 
-  --sidebar-bg: var(--gb-dm-bg0);
-  --highlight-color:var(--gb-dm-light-orange);
-  --highlight-color-dark:var(--gb-dm-dark-orange);
+
+  --darker: #242729;
+  --dark-more:#3a4044;
+  --dark: #5B6166;
+  --grey:#747B82;
+  --light: #BAC7D1;
+  --lighter: #eff7ff;
+
+  --accent: #37A3FF;
+  --accent-dark:rgb(50, 142, 223);
+  --danger:#f3513f;
+
+  --sidebar-bg: var(--darker);
+  --sidebar-bg-hover:var(--dark-more);
+  --highlight-color:var(--accent);
+  --highlight-color-dark:var(--accent);
   --sidebar-bg-light: var(--highlight-color);
-  --sidebar-text: var(--gb-dm-fg0);
-  --sidebar-text-light: var(--gb-dm-fg3);
-  --bg-color:var(--sidebar-text);
-  --bg-color-dark:var(--gb-dm-fg1);
-  --text-color:var(--gb-dm-bg0);
-  --text-color-light:var(--gb-dm-bg3);
-  --button-bg:var(--sidebar-bg);
-  --button-bg-hover:var(--gb-dm-bg1);
-  --button-bg-accent:var(--sidebar-bg-light);
-  --button-bg-light:var(--gb-dm-dark-gray);
-  --button-bg-light-hover:var(--gb-dm-light-gray);
-  --border-color:var(--gb-dm-fg2);
-  --remove-color:var(--gb-dm-light-orange);
+  --sidebar-text: var(--lighter);
+  --sidebar-text-light: var(--light);
+  --bg-color:var(--lighter);
+  --bg-color-dark:var(--lighter);
+  --text-color:var(--darker);
+  --text-color-light:var(--dark);
+  --button-bg:var(--accent);
+  --button-bg-hover:var(--accent-dark);
+  --button-bg-accent:var(--highlight-color);
+  --button-bg-light:var(--dark);
+  --button-bg-light-hover:var(--dark-more);
+  --border-color:var(--light);
+  --remove-color:var(--danger);
   --modal-bg:rgba(0,0,0,0.5);
-  --window-border-color:var(--gb-dm-bg0-hard);
+  --window-border-color:var(--darker);
+  --scrollbar-bg:var(--light);
+  --scrollbar-thumb:var(--accent);
+  --scrollbar-thumb-hover:var(--accent-dark);
 }
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -104,20 +120,20 @@ table {
 /* end reset */
 
 ::-webkit-scrollbar {
-  width: 1em;
+  width: 0.75em;
 }
 ::-webkit-scrollbar-track {
-  background-color: var(--bg-color-dark);
+  background-color: var(--scrollbar-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--highlight-color);
+  background-color: var(--scrollbar-thumb);
 }
 ::-webkit-scrollbar-thumb:hover{
-  background-color:var(--highlight-color-dark)
+  background-color:var(--scrollbar-thumb-hover)
 }
 input:focus,.button:focus,.focusable:focus,textarea:focus{
   outline-style:dashed;
-  outline-width:2px;
+  outline-width:1px;
   outline-color:var(--sidebar-bg-light);
 }
 
@@ -164,8 +180,8 @@ body{
   line-height:200%;
 }
 .title-bar .title-bar-icon{
-  width:1.5rem;
-  height:1.5rem;
+  width:24px;/* 1.5rem; */
+  height:24px;/* 1.5rem; */
   margin:0.5rem;
 }
 .app{
@@ -227,7 +243,7 @@ input, textarea{
 }
 .sidebar-item{
   color:var(--sidebar-text-light);
-  padding:0.8rem 0.8rem 0.8rem 2rem;
+  padding:0.6rem 0.6rem 0.6rem 2rem;
   border-left:solid 0.5rem transparent;
   box-sizing: border-box;
   display:flex;
@@ -236,7 +252,7 @@ input, textarea{
   user-select: none;
 }
 .sidebar-item:hover{
-  background:var(--button-bg-hover);
+  background:var(--sidebar-bg-hover);
 }
 .sidebar-item__pilled{
   justify-content:space-between;
@@ -284,6 +300,9 @@ a.sidebar-item:hover{
   position:relative;
   animation:float 0.2s ease-out;
 }
+.chat-entry:last-of-type{
+  border-bottom:none;
+}
 @keyframes float {
   0%{
     opacity: 0;
@@ -297,12 +316,14 @@ a.sidebar-item:hover{
 }
 .chat-entry-info{
   line-height:1em;
-  font-weight:lighter;
-  color:var(--text-color-light);
-}
-.chat-entry-info .username{
   font-weight:bolder;
   color:var(--text-color);
+}
+
+.chat-entry-info .chat-time{
+  font-weight:lighter;
+  font-size:0.8rem;
+  color:var(--text-color-light);
 }
 .chat-text{
   margin-top:0.5rem;
@@ -316,6 +337,7 @@ a.sidebar-item:hover{
   height:100%;
   resize:none;
   flex: 1 1 auto;
+  padding:0.3rem;
 }
 .chat-input .button{
   display:block;
@@ -445,6 +467,9 @@ a.sidebar-item:hover{
 }
 .button.button__light:hover{
   background:var(--button-bg-light-hover);
+}
+.button.button__close:hover{
+  background:var(--remove-color) !important;
 }
 .remove-cabal{
   user-select: none;

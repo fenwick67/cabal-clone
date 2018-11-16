@@ -1,4 +1,5 @@
 const shajs = require('sha.js')
+const cabalCore = require('cabal-core');
 
 // create a cabal key for an arbitrary string
 module.exports = function cabalKeyForString(str){
@@ -16,8 +17,7 @@ module.exports = function cabalKeyForString(str){
 
 	// generate one based on string input
 	return shajs('sha256')
-		.update('cabal-clonev0','utf8')
-		.update(str,'utf8')
+		.update('cabal-clonev0:'+cabalCore.protocolVersion+':'+str,'utf8')
 		.digest('hex');
 }
 
