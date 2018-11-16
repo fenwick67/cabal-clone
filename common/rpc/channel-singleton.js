@@ -4,7 +4,7 @@
 var channel = {
     client:{
         handleMessage:function(){},
-        send:function(x){
+        sendMessage:function(x){
             channel.server.handleMessage(x);
         },
         listen:function(handler){
@@ -13,7 +13,7 @@ var channel = {
     },
     server:{
         handleMessage:function(){},
-        send:function(x){
+        sendMessage:function(x){
             channel.client.handleMessage(x);
         },
         listen:function(handler){

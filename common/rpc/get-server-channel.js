@@ -3,6 +3,8 @@
 var system;
 const rpc = require('./rpc')
 var cordova;
+const dummyChannel = require('./channel-singleton')
+
 try{
     cordova = require('cordova-bridge');
 }catch(e){

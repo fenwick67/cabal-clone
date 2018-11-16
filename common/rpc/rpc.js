@@ -15,9 +15,10 @@ client.callMethod('square',2,(er,result)=>{
 client.on('clockTick',console.log);
 
 */
-var rpcSender = function(sendMessage,listenForMessages){
+var rpcClient = function(sendMessage,listenForMessages){
     var callbacks = {} // id:callback
     var listeners = {} // 'eventName':[listener1,listener2]
+    var sendMessage = sendMessage;
 
     listenForMessages(message=>{
         if(message.type=='rpcResult'){
@@ -30,7 +31,7 @@ var rpcSender = function(sendMessage,listenForMessages){
             var args = message.arguments;
             if (listeners[message.eventName]){
                 listeners[message.eventName].forEach(listener=>{
-                    listener.call(...args);
+                    listener.call(listener,...args);
                 })
             }
         }
@@ -72,7 +73,8 @@ var rpcSender = function(sendMessage,listenForMessages){
 }
 
 
-var rpcReceiver = function(sendMessage,listenForMessages){
+var rpcServer = function(sendMessage,listenForMessages){
+    var sendMessage = sendMessage;
 
     var handleError = function(e){
         console.log(e);
@@ -91,7 +93,8 @@ var rpcReceiver = function(sendMessage,listenForMessages){
                     var result = null;
                     var error = null;
                     try{
-                        result = handlers[message.method].func.call(...args);
+                        var func = handlers[message.method].func;
+                        result = func.call(func,...args);
                     }catch(e){
                         error = e;
                     }
@@ -131,5 +134,5 @@ function genId(){
 }
 
 
-exports.server = rpcReceiver;
-exports.client = rpcSender
+exports.server = rpcServer;
+exports.client = rpcClient

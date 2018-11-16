@@ -4,7 +4,7 @@ var system;
 const rpc = require('./rpc')
 const dummyChannel = require('./channel-singleton')
 
-if(window && window.isCordova){
+if(typeof window != 'undefined' && window.isCordova){
 
     var sendMessage = function(msg){
         nodejs.channel.send(msg)
