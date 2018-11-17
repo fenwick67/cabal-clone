@@ -5,7 +5,7 @@ var channel = {
     client:{
         handleMessage:function(){},
         sendMessage:function(x){
-            channel.server.handleMessage(x);
+            channel.server.handleMessage(jsonClone(x));
         },
         listen:function(handler){
             channel.client.handleMessage=handler;
@@ -14,12 +14,16 @@ var channel = {
     server:{
         handleMessage:function(){},
         sendMessage:function(x){
-            channel.client.handleMessage(x);
+            channel.client.handleMessage(jsonClone(x));
         },
         listen:function(handler){
             channel.server.handleMessage=handler;
         }
     }
+}
+
+function jsonClone(x){
+    return JSON.parse(JSON.stringify(x));
 }
 
 module.exports = channel;

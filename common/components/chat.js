@@ -1,4 +1,3 @@
-const collect = require('collect-stream');
 const validateMessage = require('../validate-message.js');
 
 module.exports = {
@@ -67,11 +66,10 @@ module.exports = {
       this.messages = [];
       this.username = null;
       var startChannel = this.channel;
-      // load messages
-      this.messageBackStream = this.cabal.messages.read(this.channel,{limit:1000});
-      // try reading the stream
+
       this.$emit('loadStart');
-      collect(this.messageBackStream, (er,data)=>{
+      // load messages
+      this.cabal.getMessages(this.channel,{limit:1000},(er,data)=>{
         this.$emit('loadEnd');
         if (this.channel != startChannel){
           return;// in case the channel changed
@@ -82,17 +80,28 @@ module.exports = {
         for(let i = data.length - 1; i >= 0; i --){
           this.addMessage(data[i]);
         }
+
       });
+      
       // listen for new messages
-      this.cabal.messages.events.on(this.channel, this.addMessage)
-      this.messageListener = [this.cabal.messages.events, this.channel, this.addMessage];
+
+      // TODO this was  commented out;
+      var handleMessage = (m)=>{
+        if (m.channel == this.channel){
+          this.addMessage(m);
+        }
+      };
+
+      this.cabal.on('message',handleMessage);
+
+      this.messageListener = [this.cabal,'message',handleMessage];
 
       // check my username
       this.cabal.getLocalKey((er,key)=>{
         if(er){return console.error(er);}
         this.localKey=key;
         if(!this.cabal){return}
-        this.cabal.users.get(key,(er,result)=>{
+        this.cabal.getUser(key,(er,result)=>{
           if(er){return console.error(er);}
           if(result.name){
             this.username = result.name;
@@ -106,10 +115,6 @@ module.exports = {
         this.messageListener[0].removeListener(this.messageListener[1],this.messageListener[2]);
         this.messageListener = null;
       }
-      if (this.messageBackStream){
-        this.messageBackStream.destroy();// EEK! this might hurt cabal-core, not sure
-        this.messageBackStream = null;
-      }
     },
     reInit:function(){
       this.stop();
@@ -120,19 +125,13 @@ module.exports = {
         this.currentMessage='';
         return false;
       }
-      var entry = {
-        type: 'chat/text',
-        content: {
-          text: this.currentMessage,
-          channel: this.channel.toLowerCase()
-        }
-      };
 
-      this.cabal.publish(entry,(er)=>{
+      this.cabal.sendMessage(this.channel,this.currentMessage,(er,entry)=>{
         if(er){
           console.error(er);
         }else{
           console.log('published message:',entry)
+          this.messages.push(entry);
           this.currentMessage='';
         }
       });

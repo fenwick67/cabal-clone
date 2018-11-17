@@ -1,3 +1,5 @@
+// electron app 
+
 const {app, BrowserWindow, ipcMain} = require('electron');
 
 let win

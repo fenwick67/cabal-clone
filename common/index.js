@@ -5,9 +5,6 @@ var Cabal = require('cabal-core');
 
 var store = require('../common/store')
 var crypto = require('crypto');
-const cabalKeyForString = require('../common/cabal-key-for-string')
-
-var swarm = require('cabal-core/swarm');
 
 var defaultCabals = [];
 
@@ -15,6 +12,8 @@ const filters = require('../common/filters');
 Object.keys(filters).forEach(k=>{
 	Vue.filter(k,filters[k])
 });
+
+var CabalClient = require('../common/cabal-rpc').Client;
 
 const components = [
 	'cabal-select',
@@ -96,28 +95,21 @@ const appView = new Vue({
 	},
 	methods:{
 		switchToCabal(plaintextKey){
-			// validate the key first
 
 			console.log('switching to key '+plaintextKey)
-			this.loading = true;
-			loadCabal(plaintextKey,(er,cabal)=>{
-				this.loading = false;
-				if(er){
-					alert(er);
-					console.error(er);
-					return;
-				}
+			
+			var cabal = new CabalClient(plaintextKey);
+			this.activeCabal = cabal;
+			
+			var idx = this.plaintextCabalKeys.indexOf(cabal.plaintextKey)
+			if(idx == -1){
+				this.plaintextCabalKeys.push(plaintextKey);
+				store.set('plaintextCabalKeys',this.plaintextCabalKeys);
+			}
 
-				this.activeCabal = cabal;
-				var idx = this.plaintextCabalKeys.indexOf(cabal.plaintextKey)
-				if(idx == -1){
-					this.plaintextCabalKeys.push(plaintextKey);
-					store.set('plaintextCabalKeys',this.plaintextCabalKeys);
-				}
-
-			})
 		},
 		removeCabal(plaintextKey){
+			// TODO tear it down
 			if (this.activeCabal && this.activeCabal.plaintextKey === plaintextKey){
 				this.activeCabal = null;
 			}
@@ -152,63 +144,3 @@ const appView = new Vue({
 		}
 	}
 });
-
-var loadCabal = (plaintextKey,done)=>{
-	var key = cabalKeyForString(plaintextKey);
-
-	if (cabalCache[plaintextKey]){
-		return done(null,cabalCache[plaintextKey]);
-	}
-	let homedir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-	let rootdir = homedir + '/.cabal-clone/archives/';
-	let dir = rootdir + key;
-
-	let cabal = Cabal(dir,key);
-
-	let ready = (er,cabal)=>{
-		if(er){
-			return done(er);
-		}else{
-			swarm(cabal);
-			cabalCache[plaintextKey] = cabal;
-			cabal.plaintextKey = plaintextKey;
-			return done(er,cabal);
-		}
-	}
-
-	cabal.db.ready(()=>{
-		if(key){
-			ready(null,cabal);
-		}else{
-			cabal.getLocalKey((er,k)=>{
-				ready(er,cabal);
-			});
-		}
-	});
-
-}
-
-var randomKey = function(){
-	if(crypto.randomBytes){
-		return crypto.randomBytes(32).toString('hex');
-	}else if (crypto.getRandomValues){
-		return Array.prototype.slice.call(crypto.getRandomValues(new Uint8Array(32)))
-			.map(n=>{
-				var s = n.toString(16);
-				while(s.length < 2){s = '0'+s}
-			})
-			.join('');
-	}else{
-		var r = [];
-		for (var i = 0; i < 32; i ++){
-			r.push(Math.floor(256*Math.random()));
-		}
-		return r.map(n=>{
-			var s = n.toString(16);
-			while(s.length < 2){s = '0'+s}
-		})
-		.join('');
-	}
-}
-
-var cabalCache = {}

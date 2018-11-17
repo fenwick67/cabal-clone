@@ -1,10 +1,18 @@
 /*
 
-var server = rpc.server(someSendMethod,someListenMethod);
+RPC module. Useful for making RPC functions work across seperate contexts.
+
+messageSender needs to be a function that accepts a JSON object and sends it (to the other side)
+messageListener needs to be a function that sets the interface's handler for incoming messages. One example would be...
+
+// server side
+
+var server = rpc.server(sendData,listen);
 server.registerSyncHandler('square',a=>a*a);
 setInterval(x=>{
     server.emit('clockTick',date.now())
 },1000)
+
 
 // on the client side now you can...
 

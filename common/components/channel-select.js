@@ -47,7 +47,7 @@ module.exports = {
       }
 
       this.channelPollLock = true;
-      this.cabal.channels.get((error,channels)=>{
+      this.cabal.getChannels((error,channels)=>{
         this.channelPollLock = false;
         if(error){
           return;

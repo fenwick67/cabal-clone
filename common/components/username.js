@@ -32,7 +32,7 @@ module.exports = {
       this.nick = nicknameCache[this.userid];
       return;
     }
-    this.cabal.users.get(this.userid,(er,result)=>{
+    this.cabal.getUser(this.userid,(er,result)=>{
       this.pollLock=false;
       if(er){
         console.error(er);
