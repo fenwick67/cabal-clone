@@ -29,6 +29,8 @@ client.on('message',(er,msg)=>
 */
 
 const collect = require('collect-stream');
+const thunky = require('thunky');
+
 
 function Server(...args){
     var rpcServer = require('./rpc/get-server-channel');
@@ -40,48 +42,49 @@ function Server(...args){
     var Cabal = require('cabal-core'); // NOTE: not a top-level require() because I don't want UI layer to call this
     var swarm = require('cabal-core/swarm'); // same as above
 
-
+    var cabalCache = {}
+    var queuedFuncs = {}
+    
     var loadCabal = (plaintextKey,done)=>{
+
         var key = cabalKeyForString(plaintextKey);
 
+        // we already loaded this LOL
         if (cabalCache[plaintextKey]){
             return done(null,cabalCache[plaintextKey]);
         }
-        let homedir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-        let rootdir = homedir + '/.cabal-clone/archives/';
-        let dir = rootdir + key;
 
-        let cabal = Cabal(dir,key);
+        // cabal is either loading currently or not loaded at all.
+        // if we tried to load, the thunky function is already there.
+        // if not, we have to create it.
+        // thunky will handle calling any stacked callbacks once when the cabal finishes loading.
+        queuedFuncs[plaintextKey] = queuedFuncs[plaintextKey] || thunky(function(callback){
+            let homedir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+            let rootdir = homedir + '/.cabal-clone/archives/';
+            let dir = rootdir + key;
 
-        let ready = (er,cabal)=>{
-            if(er){
-                return done(er);
-            }else{
-                swarm(cabal);
-                cabalCache[plaintextKey] = cabal;
-                cabal.plaintextKey = plaintextKey;
-                return done(er,cabal);
-            }
-        }
-        
-        cabal.db.ready(()=>{
-            if(key){
-                ready(null,cabal);
-            }else{
-                cabal.getLocalKey((er,k)=>{
-                    ready(er,cabal);
-                });
-            }
+            let cabal = Cabal(dir,key);           
+            
+            cabal.db.ready((er)=>{
+                if(er){
+                    return callback(er);
+                }else{
+                    cabal.messages.events.on('message',function(...args){
+                        rpcServer.emit('message:'+plaintextKey,...args)
+                    });
+
+                    swarm(cabal);
+                    cabalCache[plaintextKey] = cabal;
+                    cabal.plaintextKey = plaintextKey;
+                    return callback(er,cabal);
+                }
+            });
         });
-
-        cabal.on('message',function(...args){
-            rpcServer.emit('message:'+plaintextKey,...args)
-        })
+        
+        queuedFuncs[plaintextKey](done);
+        
 
     };
-
-
-    var cabalCache = {}
 
 
     // actual methods that will be exposed by the server
@@ -159,7 +162,7 @@ class RemoteCabal extends require('events').EventEmitter {
         // generate functions that will call an rpc method with a cabal key as the first argument.
         var generateKeyedProxyMethod = (name)=>{
             return (...args)=>{
-                rpcClient.callMethod(name,this.key,...args);
+                rpcClient.callMethod(name,this.plaintextKey,...args);
             }
         }
 

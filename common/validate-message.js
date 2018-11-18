@@ -3,7 +3,7 @@ module.exports = function(m){
     !m ||
     !m.key ||
     !m.value ||
-    m.value.type !== 'chat/text' ||
+    !(m.value.type == 'chat/text' || m.value.type == 'chat/emote') ||
     !m.value.content ||
     !m.value.content.channel ||
     !m.value.content.text ||

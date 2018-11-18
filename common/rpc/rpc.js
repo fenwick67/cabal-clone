@@ -131,6 +131,7 @@ var rpcServer = function(sendMessage,listenForMessages){
             handlers[functionName] = {async:true,func:func}
         },
         emit:function(eventName,...args){
+            console.log('emitting',eventName)
             sendMessage({type:'event',eventName:eventName,arguments:args})
         }
     }

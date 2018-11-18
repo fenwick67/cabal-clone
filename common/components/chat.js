@@ -85,9 +85,9 @@ module.exports = {
       
       // listen for new messages
 
-      // TODO this was  commented out;
       var handleMessage = (m)=>{
-        if (m.channel == this.channel){
+        console.log('got message in UI',m);
+        if (validateMessage(m) && m.value.content.channel == this.channel){
           this.addMessage(m);
         }
       };
@@ -127,11 +127,13 @@ module.exports = {
       }
 
       this.cabal.sendMessage(this.channel,this.currentMessage,(er,entry)=>{
+        console.log(entry);
         if(er){
           console.error(er);
         }else{
           console.log('published message:',entry)
-          this.messages.push(entry);
+          // this is a bit hacky... localKey can be null, and what is my seq?
+          this.addMessage({key:this.localKey,value:entry});
           this.currentMessage='';
         }
       });

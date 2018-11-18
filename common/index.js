@@ -34,7 +34,7 @@ const appView = new Vue({
 	el:"#app",
 	template:`
 		<div class="frame">
-			<title-bar/>
+			<title-bar v-if="!isMobile"/>
 			<div class="app">
 				<div class="sidebar">
 					<div class="sidebar-left">
@@ -91,7 +91,7 @@ const appView = new Vue({
 		currentChannel:"default",
 		activeCabal:null,
 		loading:false,
-		isMobile:false
+		isMobile:!!window.isMobile
 	},
 	methods:{
 		switchToCabal(plaintextKey){
