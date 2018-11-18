@@ -1,3 +1,5 @@
+# build Electron app
+
 rm -r dist
 
 ./node_modules/.bin/electron-packager ./ --platform=darwin --out='dist'

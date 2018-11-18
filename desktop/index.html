@@ -1,20 +1,27 @@
 <html lang="en">
 	<head>
 		<meta charset="utf8"/>
-		<link rel="stylesheet" href="../common/style.css"></link>
+		<link rel="stylesheet" href="../lib/ui/style.css"></link>
 	</head>
 	<body>
 		<div id="app"></div>
 		<script>
 		
 
+		// set globals
+
 		window.isMobile = false;
+
+		// expose ipcRenderer on the window, so the titleBar can use it
+		const {ipcRenderer} = require('electron');
+		window.ipcRenderer = ipcRenderer;
+
 		// create the manager to handle the cabal exchanges
-		// I used to do this with RPC but it was slow so *shrug*
-		let cabalServer = require('../common/cabal-rpc').Server();
+		// I used to do this with real RPC but it was slow so *shrug*
+		let cabalServer = require('../lib/server/cabal-server')();
 
 		</script>
-		<script src="../common/index.js"></script>
+		<script src="../lib/ui/index.js"></script>
 	</body>
 
 </html>
