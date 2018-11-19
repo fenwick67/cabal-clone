@@ -1,7 +1,7 @@
 {
   "name": "cabal-clone",
   "productName": "cabal-clone",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Alternative desktop Cabal client",
   "main": "electron-app.js",
   "scripts": {
