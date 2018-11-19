@@ -39,17 +39,19 @@
   --dark: #5B6166;
   --grey:#747B82;
   --light: #BAC7D1;
+  --light-more: #d5dde4;
   --lighter: #eff7ff;
 
   --accent: #37A3FF;
-  --accent-dark:rgb(50, 142, 223);
-  --danger:#f3513f;
+  --accent-dark:#328edf;
+  --danger:#df5141;
+  --success:hsl(118, 50%, 60%);
 
   --sidebar-bg: var(--darker);
   --sidebar-bg-hover:var(--dark-more);
   --highlight-color:var(--accent);
   --highlight-color-dark:var(--accent);
-  --sidebar-bg-light: var(--highlight-color);
+  --sidebar-bg-light: var(--dark-more);
   --sidebar-text: var(--lighter);
   --sidebar-text-light: var(--light);
   --bg-color:var(--lighter);
@@ -61,13 +63,21 @@
   --button-bg-accent:var(--highlight-color);
   --button-bg-light:var(--dark);
   --button-bg-light-hover:var(--dark-more);
-  --border-color:var(--light);
+  --button-bg-white:var(--lighter);
+  --button-bg-white-hover:var(--light-more);
+  --button-color-white:var(--dark);
+  --border-color:var(--light-more);
   --remove-color:var(--danger);
   --modal-bg:rgba(0,0,0,0.5);
   --window-border-color:var(--darker);
+  --title-bar-background:var(--darker);
   --scrollbar-bg:var(--light);
-  --scrollbar-thumb:var(--accent);
-  --scrollbar-thumb-hover:var(--accent-dark);
+  --scrollbar-thumb:var(--dark);
+  --scrollbar-thumb-hover:var(--dark-more);
+  --chat-header-bg:var(--light-more);
+  --shadow:0 2px 8px 1px rgba(0,0,0,0.5);
+  --shadow-shallow:0 1px 5px 1px rgba(0, 0, 0, 0.24);
+  --shadow-shallow:none;
 }
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
@@ -92,7 +102,8 @@ time, mark, audio, video {
 	border: 0;
 	font-size: 100%;
 	font: inherit;
-	vertical-align: baseline;
+  vertical-align: baseline;
+  box-sizing: border-box;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure,
@@ -118,7 +129,9 @@ table {
 	border-spacing: 0;
 }
 /* end reset */
-
+strong{
+  font-weight:bold;
+}
 ::-webkit-scrollbar {
   width: 0.75em;
 }
@@ -164,7 +177,7 @@ body{
   z-index:10000;
   height:2.5rem;
   -webkit-app-region: drag;
-  background:var(--button-bg-light);
+  background:var(--title-bar-background);
   color:var(--sidebar-text);
   width:100%;
   align-items: center;
@@ -208,6 +221,7 @@ a{
   overflow-x: hidden;
   flex-shrink:0;
   flex-grow:1;
+  z-index:8;
 }
 input, textarea{
   display:block;
@@ -260,6 +274,7 @@ input, textarea{
 .sidebar-item *{
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 a.sidebar-item:hover{
@@ -278,16 +293,52 @@ a.sidebar-item:hover{
   width:100%;
   display:flex;
   flex-direction:column;
+  position:relative;
 }
 .chat>*{
   width:100%;
 }
+.chat-header{
+  width:100%;
+  flex-shrink:1;
+  position: sticky;
+  background:var(--chat-header-bg);
+  top:0;
+  z-index:5;
+  box-shadow:var(--shadow-shallow);
+}
+.chat-header-inner{
+  width:100%;
+  padding:0.6rem 1.0rem;
+  display:flex;
+  flex-direction: row;  
+  align-items: stretch;
+  justify-content: space-between;
+}
+.chat-header-title{
+  display:flex;
+  align-items:center;
+  font-size:1.2rem;
+  height:inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink:1;
+  max-width:50vw;
+}
+.copybox{
+  display:inline-block;
+  max-width:4rem;
+}
 .chat-entries{
+  margin:0;
+  padding:0;
   flex: 1 1 auto;
   overflow-y:auto;
   display:block;
   margin:0;
   padding:0;
+  overflow-x:hidden;
 }
 .chat-entry{
   text-decoration:none;
@@ -298,6 +349,7 @@ a.sidebar-item:hover{
   display:flex;
   border-bottom:solid 1px var(--border-color);
   position:relative;
+  max-width:100%;
   animation:float 0.2s ease-out;
 }
 .chat-entry:last-of-type{
@@ -327,6 +379,11 @@ a.sidebar-item:hover{
 }
 .chat-text{
   margin-top:0.5rem;
+  animation:float 0.2s ease-out;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 .chat-input{
   height:3rem;
@@ -410,7 +467,7 @@ a.sidebar-item:hover{
   }
 }
 .modal-background{
-  z-index:10;
+  z-index:100;
   position: absolute;
   background:var(--modal-bg);
   top: 0;
@@ -441,6 +498,8 @@ a.sidebar-item:hover{
   justify-content:space-between;
 }
 .button{
+  display:flex;
+  align-items:center;
   text-transform:uppercase;
   background:var(--button-bg);
   color:var(--sidebar-text);
@@ -462,15 +521,30 @@ a.sidebar-item:hover{
 .button.button__small{
   padding:0.2rem 0.4rem;
 }
+.button.button__white{
+  background:var(--button-bg-white);
+  border:solid 3px var(--button-color-white);
+  color:var(--button-color-white);
+}
+.button.button__white:hover{
+  background:var(--button-bg-white-hover);
+}
 .button.button__light{
   background:var(--button-bg-light);
 }
 .button.button__light:hover{
   background:var(--button-bg-light-hover);
 }
+.button.button__transparent{
+  background: rgba(0,0,0,0) !important;
+}
+.button.button__transparent:hover{
+  background: var(--button-bg-light) !important;
+}
 .button.button__close:hover{
   background:var(--remove-color) !important;
 }
+
 .remove-cabal{
   user-select: none;
   width:1rem;
@@ -481,4 +555,46 @@ a.sidebar-item:hover{
   line-height:1rem;
   flex-shrink: 0;
   color:var(--sidebar-text);
+}
+.online-circle,.offline-circle{
+  display:inline-block;
+  flex-shrink:0;
+  width:1rem;
+  height:1rem;
+  border-radius:1rem;
+  margin-right:0.3rem;
+}
+.online-circle{
+  background:var(--success);
+}
+.offline-circle{
+  background:var(--dark);
+}
+.tooltip-parent{
+  position:relative;
+}
+.tooltip{
+  animation:float 0.2s ease-out;
+  position:absolute;
+  left:0;
+  top:0;
+  margin:6px 0 0 0;
+  box-shadow: var(--shadow);
+}
+.user-list{
+  background:var(--sidebar-bg);
+  font-weight: lighter;
+  color:var(--sidebar-text);
+  max-width:20rem;
+}
+.user-list li{
+  display: flex;
+  align-items: center;
+  flex-wrap:nowrap;
+  padding:0.3rem;
+}
+.user-list li p{  
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

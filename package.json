@@ -1,7 +1,7 @@
 {
   "name": "cabal-clone",
   "productName": "cabal-clone",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Alternative desktop Cabal client",
   "main": "electron-app.js",
   "scripts": {
@@ -22,8 +22,6 @@
   },
   "devDependencies": {
     "electron": "^2.0.12",
-    "electron-packager": "^12.2.0",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2"
+    "electron-packager": "^12.2.0"
   }
 }
