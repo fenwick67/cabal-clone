@@ -57,7 +57,7 @@
   --bg-color:var(--lighter);
   --bg-color-dark:var(--lighter);
   --text-color:var(--darker);
-  --text-color-light:var(--dark);
+  --text-color-light:var(--grey);
   --button-bg:var(--accent);
   --button-bg-hover:var(--accent-dark);
   --button-bg-accent:var(--highlight-color);
@@ -130,7 +130,10 @@ table {
 }
 /* end reset */
 strong{
-  font-weight:bold;
+  font-weight:900;
+}
+i{
+  font-style: italic;
 }
 ::-webkit-scrollbar {
   width: 0.75em;
