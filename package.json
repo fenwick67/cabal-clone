@@ -11,7 +11,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "(c)",
+  "license": "GPL3",
   "dependencies": {
     "cabal-core": "^3.0.4",
     "collect-stream": "^1.2.1",
