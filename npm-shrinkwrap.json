@@ -286,9 +286,9 @@
       }
     },
     "cabal-core": {
-      "version": "3.0.4",
-      "resolved": "https://registry.npmjs.org/cabal-core/-/cabal-core-3.0.4.tgz",
-      "integrity": "sha512-A6vh/3Ul7jh7+IC7kMoW7Fmi84AOaUKTthVStvqUrt+sUsB1Trc73CQzDCzeSTEeelkd7TSGjXp9Aq2YCPT1TA==",
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/cabal-core/-/cabal-core-3.1.0.tgz",
+      "integrity": "sha512-zAKbjEGzsPO2lsJgkG7C/2xDgytV6h+m1UsKt3qXrKf6pvmCsRaU4i9TK21hUk9g6q+CsEP/SNMYsXfAJ4cdfA==",
       "requires": {
         "charwise": "^3.0.1",
         "concat-stream": "^1.6.2",
