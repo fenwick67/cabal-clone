@@ -15,7 +15,10 @@ function createWindow(){
 		vibrancy:"dark",
 		frame:false,
 		icon:"desktop/icon.png",
-		title:"Cabal Clone"
+		title:"Cabal Clone",
+		webPreferences: {
+			nodeIntegration: true
+		}
 	});
 	win.loadFile('desktop/index.html');
 

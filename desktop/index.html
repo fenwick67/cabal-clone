@@ -16,10 +16,6 @@
 		const {ipcRenderer} = require('electron');
 		window.ipcRenderer = ipcRenderer;
 
-		// create the manager to handle the cabal exchanges
-		// I used to do this with real RPC but it was slow so *shrug*
-		let cabalServer = require('../lib/server/cabal-server')();
-
 		</script>
 		<script src="../lib/ui/index.js"></script>
 	</body>

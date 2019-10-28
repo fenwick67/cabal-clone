@@ -206,6 +206,7 @@ body{
   width:100%;
   margin:0;
   padding:0;
+  height:1;/* TODO i have no idea why I need to do this */
 }
 code{
   font-family:monospace;
@@ -583,6 +584,8 @@ a.sidebar-item:hover{
   top:0;
   margin:6px 0 0 0;
   box-shadow: var(--shadow);
+  max-height:80vh;
+  overflow-y:auto;
 }
 .user-list{
   background:var(--sidebar-bg);
